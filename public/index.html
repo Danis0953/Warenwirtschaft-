@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warenwirtschaftssystem</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-section {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff5252;
+        }
+
+        .btn-success {
+            background: #34A853;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2d8e47;
+        }
+
+        .table-section {
+            margin-top: 30px;
+        }
+
+        .table-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: #f5f5f5;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .company-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .company-semitron {
+            background-color: #4285F4;
+        }
+
+        .company-hale {
+            background-color: #EA4335;
+        }
+
+        .company-fms {
+            background-color: #34A853;
+        }
+
+        .company-mercedes {
+            background-color: #FBBC04;
+            color: #333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-eingang {
+            background-color: #34A853;
+        }
+
+        .status-ausgang {
+            background-color: #EA4335;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .action-btns button {
+            padding: 5px 10px;
+            font-size: 0.85em;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #ff5252;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-card h4 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-section select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 Warenwirtschaftssystem</h1>
+            <p>Wareneingang, Warenausgang und Seriennummerverwaltung</p>
+        </div>
+
+        <div class="content">
+            <div id="alert" class="alert"></div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('wareneingang')">📥 Wareneingang</button>
+                <button class="tab-btn" onclick="switchTab('warenausgang')">📤 Warenausgang</button>
+                <button class="tab-btn" onclick="switchTab('artikel')">📋 Artikel</button>
+                <button class="tab-btn" onclick="switchTab('uebersicht')">📊 Übersicht</button>
+            </div>
+
+            <!-- WARENEINGANG TAB -->
+            <div id="wareneingang" class="tab-content active">
+                <div class="form-section">
+                    <h2>Wareneingang erfassen</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="eingang-artikel">Artikel *</label>
+                            <select id="eingang-artikel" required>
+                                <option value="">-- Artikel wählen --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="eingang-menge">Menge *</label>
+                            <input type="number" id="eingang-menge" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eingang-datum">Datum *</label>
+                            <input type="date" id="eingang-datum" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eingang-seriennummer">Seriennummer</label>
+                            <input type="text" id="eingang-seriennummer" placeholder="z.B. SN-001-2024">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="addWareneingang()">✓ Wareneingang erfassen</button>
+                </div>
+
+                <div class="table-section">
+                    <h3>Wareneingänge</h3>
+                    <div class="search-bar">
+                        <input type="text" id="search-eingang" placeholder="Nach Artikel oder Seriennummer suchen..." onkeyup="filterTable('eingang')">
+                    </div>
+                    <table id="table-eingang">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Artikel</th>
+                                <th>Firma</th>
+                                <th>Menge</th>
+                                <th>Seriennummer</th>
+                                <th>Aktion</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-eingang">
+                            <tr><td colspan="6" class="loading"><div class="spinner"></div>Lädt...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- WARENAUSGANG TAB -->
+            <div id="warenausgang" class="tab-content">
+                <div class="form-section">
+                    <h2>Warenausgang erfassen</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="ausgang-artikel">Artikel *</label>
+                            <select id="ausgang-artikel" required>
+                                <option value="">-- Artikel wählen --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ausgang-menge">Menge *</label>
+                            <input type="number" id="ausgang-menge" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ausgang-datum">Datum *</label>
+                            <input type="date" id="ausgang-datum" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ausgang-seriennummer">Seriennummer</label>
+                            <input type="text" id="ausgang-seriennummer" placeholder="z.B. SN-001-2024">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="addWarenausgang()">✓ Warenausgang erfassen</button>
+                </div>
+
+                <div class="table-section">
+                    <h3>Warenausgänge</h3>
+                    <div class="search-bar">
+                        <input type="text" id="search-ausgang" placeholder="Nach Artikel oder Seriennummer suchen..." onkeyup="filterTable('ausgang')">
+                    </div>
+                    <table id="table-ausgang">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Artikel</th>
+                                <th>Firma</th>
+                                <th>Menge</th>
+                                <th>Seriennummer</th>
+                                <th>Aktion</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-ausgang">
+                            <tr><td colspan="6" class="loading"><div class="spinner"></div>Lädt...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ARTIKEL TAB -->
+            <div id="artikel" class="tab-content">
+                <div class="form-section">
+                    <h2>Neuen Artikel hinzufügen</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="artikel-name">Artikelname *</label>
+                            <input type="text" id="artikel-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="artikel-firma">Firma *</label>
+                            <select id="artikel-firma" required>
+                                <option value="">-- Firma wählen --</option>
+                                <option value="Hale">Hale</option>
+                                <option value="Semitron">Semitron</option>
+                                <option value="Mercedes">Mercedes</option>
+                                <option value="FMS">FMS</option>
+                                <option value="Sonstige">Sonstige</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="artikel-nummer">Artikelnummer</label>
+                            <input type="text" id="artikel-nummer">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="addNewArtikel()">✓ Artikel hinzufügen</button>
+                </div>
+
+                <div class="table-section">
+                    <h3>Alle Artikel</h3>
+                    <div class="filter-section">
+                        <select id="filter-firma" onchange="filterArtikelTable()">
+                            <option value="">Alle Firmen</option>
+                            <option value="Hale">Hale</option>
+                            <option value="Semitron">Semitron</option>
+                            <option value="Mercedes">Mercedes</option>
+                            <option value="FMS">FMS</option>
+                            <option value="Sonstige">Sonstige</option>
+                        </select>
+                    </div>
+                    <table id="table-artikel">
+                        <thead>
+                            <tr>
+                                <th>Artikelname</th>
+                                <th>Firma</th>
+                                <th>Artikelnummer</th>
+                                <th>Aktueller Bestand</th>
+                                <th>Aktion</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-artikel">
+                            <tr><td colspan="5" class="loading"><div class="spinner"></div>Lädt...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ÜBERSICHT TAB -->
+            <div id="uebersicht" class="tab-content">
+                <h2 style="margin-bottom: 20px; color: #333;">📊 Bestandsübersicht</h2>
+
+                <div class="stats" id="stats-container">
+                    <div class="loading"><div class="spinner"></div>Lädt...</div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Export & Backup</h2>
+                    <button class="btn btn-success" onclick="exportData()">💾 Daten exportieren (JSON)</button>
+                </div>
+
+                <div class="form-section">
+                    <h2>Bestand nach Firma</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Firma</th>
+                                <th>Artikel</th>
+                                <th>Gesamtbestand</th>
+                                <th>Letzte Änderung</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-firma-bestand">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-section">
+                    <h2>Artikelbestand mit Seriennummern</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Artikel</th>
+                                <th>Firma</th>
+                                <th>Seriennummer</th>
+                                <th>Status</th>
+                                <th>Datum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-seriennummern">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let artikel = [];
+        let wareneingangs = [];
+        let warenausgaengs = [];
+
+        // API Aufrufe
+        const API = {
+            artikel: {
+                getAll: () => fetch('/api/artikel').then(r => r.json()),
+                add: (data) => fetch('/api/artikel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                }).then(r => r.json()),
+                delete: (id) => fetch(`/api/artikel/${id}`, { method: 'DELETE' }).then(r => r.json())
+            },
+            eingang: {
+                getAll: () => fetch('/api/wareneingang').then(r => r.json()),
+                add: (data) => fetch('/api/wareneingang', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                }).then(r => r.json()),
+                delete: (id) => fetch(`/api/wareneingang/${id}`, { method: 'DELETE' }).then(r => r.json())
+            },
+            ausgang: {
+                getAll: () => fetch('/api/warenausgang').then(r => r.json()),
+                add: (data) => fetch('/api/warenausgang', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                }).then(r => r.json()),
+                delete: (id) => fetch(`/api/warenausgang/${id}`, { method: 'DELETE' }).then(r => r.json())
+            }
+        };
+
+        // Alert anzeigen
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type} show`;
+            setTimeout(() => alert.classList.remove('show'), 4000);
+        }
+
+        // Initialization
+        async function init() {
+            document.getElementById('eingang-datum').valueAsDate = new Date();
+            document.getElementById('ausgang-datum').valueAsDate = new Date();
+            await loadData();
+        }
+
+        async function loadData() {
+            try {
+                artikel = await API.artikel.getAll();
+                wareneingangs = await API.eingang.getAll();
+                warenausgaengs = await API.ausgang.getAll();
+                updateArtikelSelects();
+                renderTables();
+            } catch (error) {
+                console.error('Fehler beim Laden der Daten:', error);
+                showAlert('Fehler beim Laden der Daten', 'error');
+            }
+        }
+
+        // Tab Wechsel
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            if (tabName === 'uebersicht') {
+                updateStats();
+            }
+        }
+
+        // Wareneingang hinzufügen
+        async function addWareneingang() {
+            const artikel_name = document.getElementById('eingang-artikel').value;
+            const menge = document.getElementById('eingang-menge').value;
+            const datum = document.getElementById('eingang-datum').value;
+            const seriennummer = document.getElementById('eingang-seriennummer').value;
+
+            if (!artikel_name || !menge || !datum) {
+                showAlert('Bitte füllen Sie alle erforderlichen Felder aus!', 'error');
+                return;
+            }
+
+            try {
+                const result = await API.eingang.add({
+                    artikel_name,
+                    menge: parseInt(menge),
+                    datum,
+                    seriennummer: seriennummer || null
+                });
+
+                showAlert('✓ Wareneingang erfolgreich erfasst!');
+                await loadData();
+                clearEingangForm();
+            } catch (error) {
+                console.error('Fehler:', error);
+                showAlert('Fehler beim Speichern', 'error');
+            }
+        }
+
+        // Warenausgang hinzufügen
+        async function addWarenausgang() {
+            const artikel_name = document.getElementById('ausgang-artikel').value;
+            const menge = document.getElementById('ausgang-menge').value;
+            const datum = document.getElementById('ausgang-datum').value;
+            const seriennummer = document.getElementById('ausgang-seriennummer').value;
+
+            if (!artikel_name || !menge || !datum) {
+                showAlert('Bitte füllen Sie alle erforderlichen Felder aus!', 'error');
+                return;
+            }
+
+            try {
+                const result = await API.ausgang.add({
+                    artikel_name,
+                    menge: parseInt(menge),
+                    datum,
+                    seriennummer: seriennummer || null
+                });
+
+                showAlert('✓ Warenausgang erfolgreich erfasst!');
+                await loadData();
+                clearAusgangForm();
+            } catch (error) {
+                console.error('Fehler:', error);
+                showAlert('Fehler beim Speichern', 'error');
+            }
+        }
+
+        // Neuen Artikel hinzufügen
+        async function addNewArtikel() {
+            const name = document.getElementById('artikel-name').value;
+            const firma = document.getElementById('artikel-firma').value;
+            const nummer = document.getElementById('artikel-nummer').value;
+
+            if (!name || !firma) {
+                showAlert('Bitte füllen Sie alle erforderlichen Felder aus!', 'error');
+                return;
+            }
+
+            try {
+                await API.artikel.add({
+                    name,
+                    firma,
+                    nummer: nummer || `${firma}-${Date.now()}`
+                });
+
+                showAlert('✓ Artikel erfolgreich hinzugefügt!');
+                await loadData();
+                clearArtikelForm();
+            } catch (error) {
+                console.error('Fehler:', error);
+                showAlert('Fehler beim Speichern', 'error');
+            }
+        }
+
+        // Einträge löschen
+        async function deleteEntry(id, type) {
+            if (!confirm('Möchten Sie diesen Eintrag wirklich löschen?')) return;
+
+            try {
+                let api;
+                if (type === 'eingang') api = API.eingang;
+                else if (type === 'ausgang') api = API.ausgang;
+                else if (type === 'artikel') api = API.artikel;
+
+                await api.delete(id);
+                showAlert('✓ Eintrag gelöscht!');
+                await loadData();
+            } catch (error) {
+                console.error('Fehler:', error);
+                showAlert('Fehler beim Löschen', 'error');
+            }
+        }
+
+        // Artikel Select Update
+        function updateArtikelSelects() {
+            const selects = ['eingang-artikel', 'ausgang-artikel'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">-- Artikel wählen --</option>';
+
+                artikel.forEach((art) => {
+                    const option = document.createElement('option');
+                    option.value = art.name;
+                    option.textContent = `${art.name} (${art.firma})`;
+                    select.appendChild(option);
+                });
+
+                select.value = currentValue;
+            });
+        }
+
+        // Tabellen rendern
+        function renderTables() {
+            renderWareneingang();
+            renderWarenausgang();
+            renderArtikelTable();
+        }
+
+        function renderWareneingang() {
+            const tbody = document.getElementById('tbody-eingang');
+            tbody.innerHTML = '';
+
+            if (wareneingangs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px;">Keine Wareneingänge erfasst</td></tr>';
+                return;
+            }
+
+            wareneingangs.sort((a, b) => new Date(b.datum) - new Date(a.datum)).forEach(entry => {
+                const art = artikel.find(a => a.name === entry.artikel_name);
+                const firma = art ? art.firma : 'Unbekannt';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(entry.datum)}</td>
+                    <td>${entry.artikel_name}</td>
+                    <td><span class="company-badge ${getFirmaClass(firma)}">${firma}</span></td>
+                    <td>${entry.menge}</td>
+                    <td>${entry.seriennummer || '-'}</td>
+                    <td><button class="btn-delete" onclick="deleteEntry(${entry.id}, 'eingang')">🗑️ Löschen</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderWarenausgang() {
+            const tbody = document.getElementById('tbody-ausgang');
+            tbody.innerHTML = '';
+
+            if (warenausgaengs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px;">Keine Warenausgänge erfasst</td></tr>';
+                return;
+            }
+
+            warenausgaengs.sort((a, b) => new Date(b.datum) - new Date(a.datum)).forEach(entry => {
+                const art = artikel.find(a => a.name === entry.artikel_name);
+                const firma = art ? art.firma : 'Unbekannt';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(entry.datum)}</td>
+                    <td>${entry.artikel_name}</td>
+                    <td><span class="company-badge ${getFirmaClass(firma)}">${firma}</span></td>
+                    <td>${entry.menge}</td>
+                    <td>${entry.seriennummer || '-'}</td>
+                    <td><button class="btn-delete" onclick="deleteEntry(${entry.id}, 'ausgang')">🗑️ Löschen</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderArtikelTable() {
+            const tbody = document.getElementById('tbody-artikel');
+            tbody.innerHTML = '';
+
+            if (artikel.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px;">Keine Artikel vorhanden</td></tr>';
+                return;
+            }
+
+            artikel.forEach((art, idx) => {
+                const bestand = getBestand(art.name);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${art.name}</td>
+                    <td><span class="company-badge ${getFirmaClass(art.firma)}">${art.firma}</span></td>
+                    <td>${art.nummer}</td>
+                    <td><strong>${bestand}</strong></td>
+                    <td><button class="btn-delete" onclick="deleteEntry(${art.id}, 'artikel')">🗑️ Löschen</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Bestand berechnen
+        function getBestand(artikelName) {
+            const eingang = wareneingangs
+                .filter(e => e.artikel_name === artikelName)
+                .reduce((sum, e) => sum + e.menge, 0);
+
+            const ausgang = warenausgaengs
+                .filter(e => e.artikel_name === artikelName)
+                .reduce((sum, e) => sum + e.menge, 0);
+
+            return eingang - ausgang;
+        }
+
+        // Firma CSS Klasse
+        function getFirmaClass(firma) {
+            const mapping = {
+                'Semitron': 'company-semitron',
+                'Hale': 'company-hale',
+                'FMS': 'company-fms',
+                'Mercedes': 'company-mercedes'
+            };
+            return mapping[firma] || 'company-semitron';
+        }
+
+        // Statistiken
+        function updateStats() {
+            const statsContainer = document.getElementById('stats-container');
+            statsContainer.innerHTML = '';
+
+            let totalBestand = 0;
+            artikel.forEach(art => {
+                totalBestand += getBestand(art.name);
+            });
+
+            const stats = [
+                { title: 'Wareneingänge', value: wareneingangs.length, icon: '📥' },
+                { title: 'Warenausgänge', value: warenausgaengs.length, icon: '📤' },
+                { title: 'Artikel', value: artikel.length, icon: '📦' },
+                { title: 'Gesamtbestand', value: totalBestand, icon: '📊' }
+            ];
+
+            stats.forEach(stat => {
+                const card = document.createElement('div');
+                card.className = 'stat-card';
+                card.innerHTML = `
+                    <h4>${stat.title}</h4>
+                    <div class="value">${stat.icon} ${stat.value}</div>
+                `;
+                statsContainer.appendChild(card);
+            });
+
+            renderFirmaBestand();
+            renderSeriennummern();
+        }
+
+        function renderFirmaBestand() {
+            const tbody = document.getElementById('tbody-firma-bestand');
+            tbody.innerHTML = '';
+
+            const firmas = ['Hale', 'Semitron', 'Mercedes', 'FMS', 'Sonstige'];
+
+            firmas.forEach(firma => {
+                const firmaArtikel = artikel.filter(a => a.firma === firma);
+                if (firmaArtikel.length === 0) return;
+
+                let totalBestand = 0;
+                firmaArtikel.forEach(art => {
+                    totalBestand += getBestand(art.name);
+                });
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="company-badge ${getFirmaClass(firma)}">${firma}</span></td>
+                    <td>${firmaArtikel.length}</td>
+                    <td><strong>${totalBestand}</strong></td>
+                    <td>-</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderSeriennummern() {
+            const tbody = document.getElementById('tbody-seriennummern');
+            tbody.innerHTML = '';
+
+            const allEntries = [
+                ...wareneingangs.map(e => ({ ...e, typ: 'eingang' })),
+                ...warenausgaengs.map(e => ({ ...e, typ: 'ausgang' }))
+            ]
+            .filter(e => e.seriennummer)
+            .sort((a, b) => new Date(b.datum) - new Date(a.datum));
+
+            if (allEntries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Keine Seriennummern erfasst</td></tr>';
+                return;
+            }
+
+            allEntries.forEach(entry => {
+                const art = artikel.find(a => a.name === entry.artikel_name);
+                const firma = art ? art.firma : 'Unbekannt';
+                const status = entry.typ === 'eingang' ? 'Eingang' : 'Ausgang';
+                const statusBadge = entry.typ === 'eingang' ? 'status-eingang' : 'status-ausgang';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.artikel_name}</td>
+                    <td><span class="company-badge ${getFirmaClass(firma)}">${firma}</span></td>
+                    <td><strong>${entry.seriennummer}</strong></td>
+                    <td><span class="status-badge ${statusBadge}">${status}</span></td>
+                    <td>${formatDate(entry.datum)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Filter
+        function filterTable(type) {
+            const searchInput = document.getElementById(`search-${type}`).value.toLowerCase();
+            const tbody = document.getElementById(`tbody-${type}`);
+            const rows = tbody.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchInput) ? '' : 'none';
+            });
+        }
+
+        function filterArtikelTable() {
+            const filterValue = document.getElementById('filter-firma').value;
+            const tbody = document.getElementById('tbody-artikel');
+            const rows = tbody.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                if (!filterValue) {
+                    row.style.display = '';
+                } else {
+                    const text = row.textContent;
+                    row.style.display = text.includes(filterValue) ? '' : 'none';
+                }
+            });
+        }
+
+        // Export Funktion
+        function exportData() {
+            const data = {
+                exportDate: new Date().toISOString(),
+                artikel: artikel,
+                wareneingangs: wareneingangs,
+                warenausgaengs: warenausgaengs,
+                statistics: {
+                    totalEingang: wareneingangs.length,
+                    totalAusgang: warenausgaengs.length,
+                    totalArtikel: artikel.length
+                }
+            };
+
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `warenwirtschaft-export-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            showAlert('✓ Daten exportiert!');
+        }
+
+        // Hilfsfunktionen
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        }
+
+        function clearEingangForm() {
+            document.getElementById('eingang-artikel').value = '';
+            document.getElementById('eingang-menge').value = '';
+            document.getElementById('eingang-seriennummer').value = '';
+            document.getElementById('eingang-datum').valueAsDate = new Date();
+        }
+
+        function clearAusgangForm() {
+            document.getElementById('ausgang-artikel').value = '';
+            document.getElementById('ausgang-menge').value = '';
+            document.getElementById('ausgang-seriennummer').value = '';
+            document.getElementById('ausgang-datum').valueAsDate = new Date();
+        }
+
+        function clearArtikelForm() {
+            document.getElementById('artikel-name').value = '';
+            document.getElementById('artikel-firma').value = '';
+            document.getElementById('artikel-nummer').value = '';
+        }
+
+        // App starten
+        window.onload = init;
+    </script>
+</body>
+</html>
